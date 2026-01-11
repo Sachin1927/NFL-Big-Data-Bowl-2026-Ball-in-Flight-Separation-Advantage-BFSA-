@@ -28,8 +28,49 @@ We processed high-frequency **Next Gen Stats (NGS)** tracking data (10 frames/se
 * **Dynamic Separation:** Calculated the Euclidean distance between the target receiver and the nearest defender at every 0.1s interval during flight.
 * **Advantage Scoring:** `BFSA` accumulates the separation advantage over the duration of the flight, weighted by the ball's proximity to the arrival point.
 
-⚙️ Methodology1. DatasetWe utilized the Big Data Bowl 2026 dataset, specifically:input_2023_wXX.csv: Tracking from snap until throw.output_2023_wXX.csv: Tracking from throw until catch/incompletion.Focus: Targeted Receiver vs. Nearest Defender (Defensive Coverage role).2. Core Geometry & FormulasThe metric calculates the spatial relationship between players and the Ball Landing Point ($B$) for every frame $t$ the ball is in the air.Definitions:$R_t$: Receiver position at frame $t$.$D_t$: Nearest Defender position at frame $t$.$B$: Ball Landing coordinates $(x_{ball}, y_{ball})$.The BFSA Equation:At the final frame $T$ (arrival), the metric is defined as:$$BFSA = d_{r,T} - d_{d,T}$$Where $d$ represents the Euclidean distance to the ball.If $BFSA > 0$: The Receiver is closer (Offensive Advantage).If $BFSA < 0$: The Defender is closer (Defensive Advantage).3. Secondary MetricsReceiver Route Efficiency ($RE_r$):$$RE_r = \frac{\text{Actual Path Length}}{\text{Straight Line Distance}}$$Values close to 1.0 indicate efficient, direct routes to the ball.Closing Speed ($CS$):Measured for both Receiver ($CS_r$) and Defender ($CS_d$) to track convergence velocity (yards/sec).
+## ⚙️ Methodology
 
+### 1. Dataset
+We utilized the **Big Data Bowl 2026** dataset, specifically focusing on the following files:
+* `input_2023_wXX.csv`: Tracking data from the snap until the pass is thrown.
+* `output_2023_wXX.csv`: Tracking data from the release of the pass until the catch or incompletion.
+* **Scope:** We filtered the data to isolate interactions between the **Targeted Receiver** and the **Nearest Defender** (specifically those with a "Defensive Coverage" role).
+
+### 2. Core Geometry & Formulas
+The metric calculates the spatial relationship between players and the **Ball Landing Point ($B$)** for every frame ($t$) the ball is in the air.
+
+
+
+**Definitions:**
+* $R_t$: Receiver position $(x, y)$ at frame $t$.
+* $D_t$: Nearest Defender position $(x, y)$ at frame $t$.
+* $B$: Ball Landing coordinates $(x_{ball}, y_{ball})$.
+
+**The BFSA Equation:**
+To ensure that a **positive** score represents an offensive advantage, the metric is calculated as the difference between the defender's distance and the receiver's distance at the arrival frame ($T$):
+
+$$BFSA = d_{defender,T} - d_{receiver,T}$$
+
+Where $d$ represents the Euclidean distance to the ball's landing spot.
+
+**Interpretation:**
+* **If $BFSA > 0$:** The Receiver is closer to the ball (Offensive Advantage).
+* **If $BFSA < 0$:** The Defender is closer to the ball (Defensive Advantage).
+* **If $BFSA \approx 0$:** The players are equidistant (Contested/50-50 ball).
+
+### 3. Secondary Metrics
+
+#### Receiver Route Efficiency ($RE_r$)
+Measures how directly the receiver traveled to the landing spot compared to a straight line.
+
+$$RE_r = \frac{\text{Actual Path Length}}{\text{Straight Line Distance}}$$
+
+* **Interpretation:** Values close to **1.0** indicate a highly efficient, direct route. Values significantly higher than 1.0 indicate wasted movement or zig-zagging while the ball was in the air.
+
+#### Closing Speed ($CS$)
+We calculated the **Closing Speed** for both the Receiver ($CS_r$) and Defender ($CS_d$) to track their convergence velocity (yards/second) towards the landing spot $B$.
+
+$$CS = \frac{\Delta \text{Distance to Ball}}{\Delta \text{Time}}$$
 ### 3. Tech Stack
 * **Core:** Python, Pandas, NumPy
 * **Data Processing:** Polars (for high-volume tracking data efficiency)
