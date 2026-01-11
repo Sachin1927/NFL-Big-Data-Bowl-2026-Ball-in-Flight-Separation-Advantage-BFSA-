@@ -10,14 +10,22 @@
 ---
 
 ## 📖 Overview
+### 3. Example Play (Game 2023090700, Play 101)
+* **Scenario:** Deep Corner Route.
+* **Dynamics:** The receiver's path showed smooth convergence...
 
+<p align="center">
+  <img src="images/play_animation.gif" alt="Animation of Play 101" width="800">
+  <br>
+  <em>Figure 3: Frame-by-frame visualization of the Receiver (Blue) vs Defender (Red) closing speed.</em>
+</p>
 The downfield pass is the "crown jewel" of American sports. The **NFL Big Data Bowl 2026 (University Track** challenges participants to analyze player movement during the specific window when the ball is in the air—from the quarterback's release to the catch (or incompletion).
 
 **This project introduces "BFSA" (Ball-in-Flight Separation Advantage)**: A novel spatial metric that quantifies a receiver's ability to create separation from defenders *after* the ball is thrown, providing coaches with a granular efficiency score for route running under pressure.
 
 ---
 
-## 📊 Key Features & Methodology
+## 📊 Key Features
 
 ### 1. The Challenge
 Standard metrics track separation at the moment of the catch. However, they fail to capture the *dynamic* battle for position while the ball is airborne. A receiver might be open at the throw but covered at the catch—or vice versa.
@@ -29,7 +37,17 @@ We processed high-frequency **Next Gen Stats (NGS)** tracking data (10 frames/se
 * **Advantage Scoring:** `BFSA` accumulates the separation advantage over the duration of the flight, weighted by the ball's proximity to the arrival point.
 
 ## ⚙️ Methodology
+**Definitions:**
+* $R_t$: Receiver position $(x, y)$ at frame $t$.
+* $D_t$: Nearest Defender position $(x, y)$ at frame $t$.
 
+<p align="center">
+  <img src="images/bfsa_diagram.png" alt="BFSA Geometry Diagram" width="600">
+  <br>
+  <em>Figure 1: Visual representation of the Receiver vs. Defender distance vectors.</em>
+</p>
+
+**The BFSA Equation:**
 ### 1. Dataset
 We utilized the **Big Data Bowl 2026** dataset, specifically focusing on the following files:
 * `input_2023_wXX.csv`: Tracking data from the snap until the pass is thrown.
@@ -115,7 +133,15 @@ Run the Analysis
 
 jupyter notebook notebooks/BFSA_Analysis.ipynb
 
-📈 Results & Business Impact
+### 📈 Results & Business Impact
+### 1. BFSA & Pass Outcomes
+Across the dataset, BFSA provided clear discrimination between outcomes...
+
+<p align="center">
+  <img src="images/bfsa_correlation.png" alt="Graph of BFSA vs Pass Outcome" width="700">
+  <br>
+  <em>Figure 2: Distribution of BFSA scores by pass result (Completed vs. Incomplete).</em>
+</p>
 For Coaches: BFSA identifies "Contested Catch Specialists" who may not have high top speed but consistently maintain separation leverage during ball flight.
 
 For Scouting: Provides a quantitative metric to evaluate rookie receivers' route-running discipline beyond the 40-yard dash time.
