@@ -78,17 +78,20 @@ $$CS = \frac{\Delta \text{Distance to Ball}}{\Delta \text{Time}}$$
 
 ---
 
-## 📂 Repository Structure
+## 📂 Project Structure
 
-```text
-├── input/                  # (GitIgnored) Raw NFL Next Gen Stats data
-├── notebooks/              # Jupyter Notebooks for analysis and modeling
-│   └── BFSA_Analysis.ipynb # Main analysis logic
-├── output/                 # Generated CSVs and metric reports
-├── src/                    # (Optional) Helper scripts for data cleaning
-├── .gitignore              # Ignores large data files (*.csv)
-├── requirements.txt        # Python dependencies
-└── README.md               # Project documentation
+```bash
+NFL-Big-Data-Bowl-2026/
+├── data/                          # Data files (input/output/supplementary)
+│   ├── train/                     # Training data CSVs
+│   └── supplementary.csv          # Play context data
+├── images/                        # Visualizations for README
+│   ├── bfsa_diagram.png           # Methodology diagram
+│   ├── bfsa_correlation.png       # Results graph
+│   └── play_animation.gif         # Play visualization
+├── nfl-big-data-bowl-2026.ipynb   # Main Analysis Notebook (Jupyter)
+├── README.md                      # Project Documentation
+└── requirements.txt               # Python Dependencies
 
 🚀 Getting Started
 Prerequisites
@@ -122,12 +125,7 @@ For Scouting: Provides a quantitative metric to evaluate rookie receivers' route
 
 Visualization: The notebook includes 2D animated plays showing the BFSA score evolving in real-time as the play unfolds.
 
-🔗 Links & References
-Kaggle Notebook: View the code on Kaggle
-
-Input Data: Kaggle Dataset
 
 Competition: NFL Big Data Bowl 2026
 👨‍💻 Author
 Sachin
-Kaggle
