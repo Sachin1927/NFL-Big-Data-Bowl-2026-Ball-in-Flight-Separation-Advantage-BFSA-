@@ -28,6 +28,31 @@ We processed high-frequency **Next Gen Stats (NGS)** tracking data (10 frames/se
 * **Dynamic Separation:** Calculated the Euclidean distance between the target receiver and the nearest defender at every 0.1s interval during flight.
 * **Advantage Scoring:** `BFSA` accumulates the separation advantage over the duration of the flight, weighted by the ball's proximity to the arrival point.
 
+## 🧮 Mathematical Foundation
+
+To quantify receiver openness beyond simple distance, we implemented a physics-based model that accounts for velocity vectors and trajectory dynamics.
+
+### 1. Instantaneous Separation ($S_t$)
+At any given timestamp $t$, the Euclidean distance between the Receiver ($R$) and the nearest Defender ($D$) is calculated using their Cartesian coordinates $(x, y)$:
+
+$$S_t = \sqrt{(x_R(t) - x_D(t))^2 + (y_R(t) - y_D(t))^2}$$
+
+### 2. Projected Closing Speed ($PCS$)
+Mere speed difference is insufficient. We calculate the **Closing Speed** by projecting the relative velocity vector ($\vec{V}_{rel}$) onto the unit displacement vector ($\hat{u}$). This determines if the defender is actually gaining ground on the receiver.
+
+$$\text{PCS}_t = (\vec{V}_D - \vec{V}_R) \cdot \underbrace{\left( \frac{\vec{P}_R - \vec{P}_D}{\| \vec{P}_R - \vec{P}_D \|} \right)}_{\text{Unit Vector } \hat{u}}$$
+
+* **Interpretation:** A positive $PCS$ indicates the defender is closing the gap. A negative value implies the receiver is creating separation.
+
+### 3. The BFSA Metric (Integral)
+The final **Ball-in-Flight Separation Advantage** score is the time-weighted integral of separation, penalized by the defender's closing speed, over the duration of the ball's flight ($T_{flight}$).
+
+$$\text{BFSA} = \int_{t=0}^{T_{flight}} \left( S_t - \alpha \cdot \text{PCS}_t \right) \cdot w(t) \, dt$$
+
+* **$S_t$**: Instantaneous Separation
+* **$\alpha$**: Weighting factor for closing speed threat
+* **$w(t)$**: Time-decay function (higher weight as ball approaches arrival)
+
 ### 3. Tech Stack
 * **Core:** Python, Pandas, NumPy
 * **Data Processing:** Polars (for high-volume tracking data efficiency)
