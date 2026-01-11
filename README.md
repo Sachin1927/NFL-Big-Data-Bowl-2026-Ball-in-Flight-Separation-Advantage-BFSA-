@@ -11,7 +11,7 @@
 
 ## 📖 Overview
 
-The downfield pass is the "crown jewel" of American sports. The **NFL Big Data Bowl 2026** challenges participants to analyze player movement during the specific window when the ball is in the air—from the quarterback's release to the catch (or incompletion).
+The downfield pass is the "crown jewel" of American sports. The **NFL Big Data Bowl 2026 (University Track** challenges participants to analyze player movement during the specific window when the ball is in the air—from the quarterback's release to the catch (or incompletion).
 
 **This project introduces "BFSA" (Ball-in-Flight Separation Advantage)**: A novel spatial metric that quantifies a receiver's ability to create separation from defenders *after* the ball is thrown, providing coaches with a granular efficiency score for route running under pressure.
 
@@ -28,30 +28,7 @@ We processed high-frequency **Next Gen Stats (NGS)** tracking data (10 frames/se
 * **Dynamic Separation:** Calculated the Euclidean distance between the target receiver and the nearest defender at every 0.1s interval during flight.
 * **Advantage Scoring:** `BFSA` accumulates the separation advantage over the duration of the flight, weighted by the ball's proximity to the arrival point.
 
-## 🧮 Mathematical Foundation
-
-To quantify receiver openness beyond simple distance, we implemented a physics-based model that accounts for velocity vectors and trajectory dynamics.
-
-### 1. Instantaneous Separation ($S_t$)
-At any given timestamp $t$, the Euclidean distance between the Receiver ($R$) and the nearest Defender ($D$) is calculated using their Cartesian coordinates $(x, y)$:
-
-$$S_t = \sqrt{(x_R(t) - x_D(t))^2 + (y_R(t) - y_D(t))^2}$$
-
-### 2. Projected Closing Speed ($PCS$)
-Mere speed difference is insufficient. We calculate the **Closing Speed** by projecting the relative velocity vector ($\vec{V}_{rel}$) onto the unit displacement vector ($\hat{u}$). This determines if the defender is actually gaining ground on the receiver.
-
-$$\text{PCS}_t = (\vec{V}_D - \vec{V}_R) \cdot \underbrace{\left( \frac{\vec{P}_R - \vec{P}_D}{\| \vec{P}_R - \vec{P}_D \|} \right)}_{\text{Unit Vector } \hat{u}}$$
-
-* **Interpretation:** A positive $PCS$ indicates the defender is closing the gap. A negative value implies the receiver is creating separation.
-
-### 3. The BFSA Metric (Integral)
-The final **Ball-in-Flight Separation Advantage** score is the time-weighted integral of separation, penalized by the defender's closing speed, over the duration of the ball's flight ($T_{flight}$).
-
-$$\text{BFSA} = \int_{t=0}^{T_{flight}} \left( S_t - \alpha \cdot \text{PCS}_t \right) \cdot w(t) \, dt$$
-
-* **$S_t$**: Instantaneous Separation
-* **$\alpha$**: Weighting factor for closing speed threat
-* **$w(t)$**: Time-decay function (higher weight as ball approaches arrival)
+⚙️ Methodology1. DatasetWe utilized the Big Data Bowl 2026 dataset, specifically:input_2023_wXX.csv: Tracking from snap until throw.output_2023_wXX.csv: Tracking from throw until catch/incompletion.Focus: Targeted Receiver vs. Nearest Defender (Defensive Coverage role).2. Core Geometry & FormulasThe metric calculates the spatial relationship between players and the Ball Landing Point ($B$) for every frame $t$ the ball is in the air.Definitions:$R_t$: Receiver position at frame $t$.$D_t$: Nearest Defender position at frame $t$.$B$: Ball Landing coordinates $(x_{ball}, y_{ball})$.The BFSA Equation:At the final frame $T$ (arrival), the metric is defined as:$$BFSA = d_{r,T} - d_{d,T}$$Where $d$ represents the Euclidean distance to the ball.If $BFSA > 0$: The Receiver is closer (Offensive Advantage).If $BFSA < 0$: The Defender is closer (Defensive Advantage).3. Secondary MetricsReceiver Route Efficiency ($RE_r$):$$RE_r = \frac{\text{Actual Path Length}}{\text{Straight Line Distance}}$$Values close to 1.0 indicate efficient, direct routes to the ball.Closing Speed ($CS$):Measured for both Receiver ($CS_r$) and Defender ($CS_d$) to track convergence velocity (yards/sec).
 
 ### 3. Tech Stack
 * **Core:** Python, Pandas, NumPy
